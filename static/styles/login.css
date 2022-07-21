@@ -1,0 +1,21 @@
+.login-page .divider:after,
+.divider:before {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #eee;
+}
+
+.login-page .h-custom {
+  height: calc(100% - 73px);
+}
+
+.error-message{
+  color: red;
+}
+
+@media (max-width: 450px) {
+  .login-page .h-custom {
+    height: 100%;
+  }
+}
