@@ -1,14 +1,24 @@
 .admin-page .header-blue {
-  background: linear-gradient(135deg, #fe2929, #ffb3c5);
-  background-color: #184e8e;
-  padding-bottom: 80px;
   font-family: 'Source Sans Pro', sans-serif;
 }
 
-@media (min-width:768px) {
-  .admin-page .header-blue {
-    padding-bottom: 120px;
-  }
+.admin-page{
+  background-image: url("https://media.istockphoto.com/photos/corona-virus-covid19-dna-illustration-picture-id1297202819?b=1&k=20&m=1297202819&s=170667a&w=0&h=Vs7-6B_3lF_NQn5UfxWSR7G2ORkoJkWfUTHkPOkh_nk=");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size:cover;
+  background-attachment: fixed;
+  height: 100vh;
+  position: relative;
+  color: #fff !important;
+}
+
+.admin-page:before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  top: 0; bottom: 0;
+  background: rgba(0,0,0,.5);
 }
 
 .admin-page .header-blue .navbar {
@@ -19,6 +29,20 @@
   border-radius: 0;
   box-shadow: none;
   border: none;
+}
+
+.admin-page .box-content{
+  margin-top: 50px;
+  background: #27202096;
+  height: max-content;
+  min-height: 300px;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+.admin-page .border-right{
+  border-right: 1px solid #fff;
 }
 
 @media (min-width:768px) {

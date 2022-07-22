@@ -40,6 +40,7 @@ def login_page():
   except Exception as e:
     print('Exception Login: ', e)
         
+# upload file
 @app.route('/uploader', methods = ['GET', 'POST'])
 def upload_file():
   try:
@@ -67,9 +68,10 @@ def upload_file():
     return redirect(url_for('admin_page'))
   except Exception as e:
         print('Exception Login: ', e)
-        
+       
+# download file
 @app.route('/download/<path:filename>', methods=['GET', 'POST'])
-def downloadFile(filename):
+def download_file(filename):
   try:
     uploads = os.path.join(app.config['UPLOAD_FOLDER'])
     path = uploads + '/' + filename
@@ -77,33 +79,65 @@ def downloadFile(filename):
   except Exception as e:
         print('Exception Login: ', e)
 
+# get all file
 def get_all_files_in_uploads_folder():
-  files = []
+  files_csv = []
+  files_sam = []
   for file in os.listdir(UPLOADS_FOLDER):
     if os.path.isfile(os.path.join(UPLOADS_FOLDER, file)):
-        files.append(file)
-  return files 
+        type_file = file.rsplit('.', 1)[1].lower()
+        if type_file == 'sam':
+          files_sam.append(file)
+        if type_file == 'csv':
+          files_csv.append(file)
+          
+  return files_csv, files_sam
 
+# check is allow input
 def allowed_file(filename, is_admin = 0):
     if(is_admin == 0): 
       ALLOWED_EXTENSIONS = {'sam'}
     else:
       ALLOWED_EXTENSIONS = {'sam', 'csv'}
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
+  
 # Admin Func
 @app.route('/admin')
 def admin_page():
   # get all file in folder uploads
-  files = get_all_files_in_uploads_folder()
-  return render_template('home.html', files = files, role = ROLE_JSON["admin"])
+  files_csv, files_sam = get_all_files_in_uploads_folder()
+  return render_template('home.html', files_csv = files_csv, files_sam = files_sam, role = ROLE_JSON["admin"])
 
 # User Func
 @app.route('/user')
 def user_page():
   # get all file in folder uploads
-  files = get_all_files_in_uploads_folder()
-  return render_template('home.html', files = files, role = ROLE_JSON["user"])
+  files_csv, files_sam = get_all_files_in_uploads_folder()
+  return render_template('home.html', files_csv = files_csv, files_sam = files_sam, role = ROLE_JSON["user"])
+
+# run file input .sam
+@app.route('/run-file/<path:filename>/<path:role>', methods=['GET', 'POST'])
+def run_file_input(filename, role):
+  try:
+    print(filename)
+    # process to run file .sam
+    ########
+    # return to page
+    if role == ROLE_JSON["admin"]:
+      return redirect(url_for('admin_page'))
+    else:
+      return redirect(url_for('user_page'))
+  except Exception as e:
+        print('Exception Login: ', e)
+    
+# delete file
+@app.route('/delete-file/<path:filename>', methods=['GET', 'POST'])
+def delete_file(filename):
+  try:
+    os.remove(os.path.join(UPLOADS_FOLDER, filename))
+    return redirect(url_for('admin_page'))
+  except Exception as e:
+        print('Exception Login: ', e)
 
 if __name__ == '__main__':
   app.run(debug=True)

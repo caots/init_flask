@@ -1,10 +1,17 @@
-{%extends "base.html"%} {% block title %}Admin page {%endblock%} {% block
-content %}
+{%extends "base.html"%} 
+{% block title %} 
+  {% if role == 'Admin' %}
+  Admin Page
+  {% else %}
+  User Page
+  {% endif %}
+{%endblock%} 
+{% block content %}
 <div class="admin-page">
   <div class="header-blue">
     <nav class="navbar navbar-light navbar-expand-md navigation-clean-search">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">Hust</a>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Logo_Hust.png/694px-Logo_Hust.png" style="width: 50px; margin-right: 20px;"/>
         <button
           data-toggle="collapse"
           class="navbar-toggler"
@@ -25,21 +32,19 @@ content %}
               <a class="nav-link" href="#">Product</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Services</a
-              >
+              <a class="nav-link" href="#">Services</a>
             </li>
           </ul>
           <form class="form-inline mr-auto" target="_self">
             <div class="form-group"><label for="search-field"><i class="fas fa-search text-white"></i></label><input class="form-control search-field" type="search" id="search-field" name="search"></div>
           </form>
-          <a class="btn btn-light action-button" role="button" href="#">Logout</a></div>
+          <a class="btn btn-light action-button" role="button" href="{{ url_for('login_page') }}">Logout</a></div>
         </div>
       </div>
     </nav>
-    <div class="container" style="margin: 50px">
-      <h3 class="mt-5 mb-5">Welcome to website with role: {{role}}</h3>
+    <div class="container box-content">
       <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-4 border-right">
           {% if role == 'Admin' %}
           <h3>Upload file (.sam, .csv)</h3>
           {% else %}
@@ -50,7 +55,7 @@ content %}
               <form action="uploader?is_admin={{role}}" method="POST" enctype=multipart/form-data>
                 <input type="file" class="custom-file-input" id="inputGroupFile01" name="file"
                   aria-describedby="inputGroupFileAddon01" onchange="readURL();">
-                <label class="custom-file-label" id="filename" for="inputGroupFile01">Choose file</label>
+                <label style="max-width: 400px" class="custom-file-label" id="filename" for="inputGroupFile01">Choose file</label>
                 <div class="mt-5">
                   <button type="submit" class="btn btn-primary btn-small"
                   style="padding-left: 2.5rem; padding-right: 2.5rem;">Submit</button>
@@ -69,12 +74,33 @@ content %}
             {% endwith %}
           </div>
         </div>
-        <div class="col-md-6">
-          <h3>Download file (.sam, .csv)</h3>
+        <div class="col-md-4 border-right">
+          <h3>Input file (.sam)</h3>
           <div>
           </ul>
-            {% for file in files %}
-              <li class="collection-item"><a href="{{ url_for('downloadFile', filename=file) }}">{{ file }}</a></li>
+            {% for file in files_sam %}
+              <li class="collection-item">
+                <a style="color: #fff; display: inline-block; margin-right: 20px; min-width: 150px" href="{{ url_for('download_file', filename=file) }}">{{ file }}</a>
+                {% if role == 'Admin' %}
+                <a href="{{ url_for('run_file_input', filename=file, role=role) }}" style="cursor: pointer; color:#007bff; display: inline-block; margin-right: 20px;"> <i class=" fas fa-play-circle"></i></a>
+                <a href="{{ url_for('delete_file', filename=file) }}" style="cursor: pointer; color:red; display: inline-block; margin-right: 20px;"> <i class="fas fa-trash"></i></a>
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <h3>Output file (.csv)</h3>
+          <div>
+          </ul>
+            {% for file in files_csv %}
+              <li class="collection-item">
+                <a style="color: #fff; display: inline-block; margin-right: 20px; min-width: 150px" href="{{ url_for('download_file', filename=file, role=role) }}">{{ file }}</a>
+                {% if role == 'Admin' %}                
+                <a href="{{ url_for('delete_file', filename=file) }}" style="cursor: pointer; color:red; display: inline-block; margin-right: 20px;"> <i class="fas fa-trash"></i></a>
+                {% endif %}
+              </li>
             {% endfor %}
           </ul>
           </div>
@@ -91,6 +117,10 @@ content %}
         filenames.push(directory[i].name);
     }
     document.getElementById("filename").innerHTML = filenames;
+  }
+
+  function runInputFile(file){
+    console.log(file)
   }
   </script>
 {%endblock%}
